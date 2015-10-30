@@ -5,9 +5,9 @@
 
 ### Build
 
-```./build.sh```
+`./build.sh`
 
-### F#
+### F&#35;
 
 ```fsharp
 module A =
@@ -25,7 +25,7 @@ module Test =
 ```
 
 
-### C#
+### C&#35;
 
 ```csharp
 using <StartupCode$lib>;
