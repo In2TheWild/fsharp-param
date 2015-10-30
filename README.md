@@ -1,5 +1,5 @@
 
-### ArrayParam
+### Param array
 
 [![Build status](https://ci.appveyor.com/api/projects/status/kjijdhhjnuyl2mkl/branch/master?svg=true)](https://ci.appveyor.com/project/wearetherock/fsharp-param/branch/master)
 
