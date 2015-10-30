@@ -18,26 +18,25 @@ open System
 open System.Text
 open System.IO
 
-CreateDir "release"
-"packages/FAKE/tools/FSharp.Core.dll" |> CopyFile "release/FSharp.Core.dll"
+let prepare() =
+    CreateDir "release"
+    "packages/FAKE/tools/FSharp.Core.dll" |> CopyFile "release/FSharp.Core.dll"
 
-Target "dc" (fun _ ->
+Target "decompile" (fun _ ->
         try
             let pathToAssembly = "release/lib.dll"
             let def = Mono.Cecil.AssemblyDefinition.ReadAssembly(pathToAssembly)
-
             let dc = AstBuilder(DecompilerContext(def.MainModule))
             dc.AddAssembly(def);
-            //Helpers.RemoveCompilerAttribute().Run(decompiler.SyntaxTree);
 
             let output = new StringWriter()
             dc.GenerateCode(PlainTextOutput(output))
-            let str = output.ToString() + "Hello"
-            printfn "%s" str
+            let str = output.ToString()
+            File.WriteAllText ("release/source.cs", str)
         with err -> printfn "%A" err
 )
 
-Target "cc" (fun _ ->
+Target "csharp" (fun _ ->
         ["src/cs/Program.cs"]
         |> Csc(fun p ->
             { p with
@@ -46,7 +45,7 @@ Target "cc" (fun _ ->
                 Target = CscTarget.Exe })
 )
 
-Target "cf" (fun _ ->
+Target "fsharp" (fun _ ->
         ["src/Param.fsx"]
         |> Fsc( fun p ->
             { p with
@@ -54,8 +53,13 @@ Target "cf" (fun _ ->
                 FscTarget = FscTarget.Library} )
     )
 
+"fsharp"
+    ==> "csharp"
+    ==> "decompile"
+
+prepare()
 //RunTargetOrDefault fsi.CommandLineArgs.[1]
-RunTargetOrDefault "dc"
+RunTargetOrDefault "decompile"
 
 (*
 [<EntryPoint>]
