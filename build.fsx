@@ -15,7 +15,7 @@ Target "cc" (fun _ ->
         |> Csc(fun p ->
             { p with
                 Output = "release/program.exe"
-                //OtherParams = ["/reference:release/lib.dll"]
+                OtherParams = ["/reference:release/lib.dll"]
                 Target = CscTarget.Exe })
 )
 
